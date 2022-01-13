@@ -14,6 +14,9 @@
     "/categories": {
 
       "get": {
+        "security": [{
+          "CategoryAuth": []
+        }],
         "tags": ["Category API"],
         "description": "List All Categories",
         "responses": {
@@ -45,6 +48,9 @@
         }
       },
       "post": {
+        "security": [{
+          "CategoryAuth": []
+        }],
         "tags": ["Category API"],
         "description": "Create category",
         "requestBody": {
@@ -83,6 +89,9 @@
     },
     "/categories/{categoryId}": {
       "get": {
+        "security": [{
+          "CategoryAuth": []
+        }],
         "description": "Get Category By ID",
         "tags": ["Category API"],
         "parameters": [
@@ -117,6 +126,9 @@
         }
       },
       "put": {
+        "security": [{
+          "CategoryAuth": []
+        }],
         "description": "Update category By ID",
         "tags": ["Category API"],
         "parameters": [
@@ -160,6 +172,9 @@
         }
       },
       "delete": {
+        "security": [{
+          "CategoryAuth": []
+        }],
         "description": "Delete Category By ID",
         "tags": ["Category API"],
         "parameters": [
@@ -213,6 +228,14 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "CategoryAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Authentication for category API"
       }
     }
   }
