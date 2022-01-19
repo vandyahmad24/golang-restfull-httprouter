@@ -1,15 +1,20 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"golang-restapi-httprouter/helper"
 	"golang-restapi-httprouter/model/domain"
-	"context"
+	"log"
 )
 
 type CategoryRepositoryImplementation struct {
 
+}
+
+func NewCategoryRepository() *CategoryRepositoryImplementation {
+	return &CategoryRepositoryImplementation{}
 }
 
 func (repository *CategoryRepositoryImplementation) Save(ctx context.Context, tx *sql.Tx, category domain.Category) domain.Category {
@@ -36,17 +41,26 @@ func (repository *CategoryRepositoryImplementation) Delete(ctx context.Context, 
 }
 
 func (repository *CategoryRepositoryImplementation) FindById(ctx context.Context, tx *sql.Tx, categoryId int) (domain.Category,error) {
+
 	SQL := "SELECT id, name FROM category WHERE id = ?"
 	rows, err := tx.QueryContext(ctx,SQL,categoryId)
 	helper.PanicError(err)
 	category := domain.Category{}
+	defer rows.Close()
 	if rows.Next(){
+		log.Println("Masuk found")
 		err := rows.Scan(&category.Id, &category.Name)
 		helper.PanicError(err)
+		//log.Println(category)
+
+		//rows.Close()
 		return category, nil
 	}else{
-		return category, errors.New("category not found")
+		log.Println("Masuk not found")
+		//rows.Close()
+		return category, errors.New("CATEGORY NOT FOUND")
 	}
+
 }
 
 func (repository *CategoryRepositoryImplementation) FindAll(ctx context.Context, tx *sql.Tx) []domain.Category {
@@ -54,6 +68,7 @@ func (repository *CategoryRepositoryImplementation) FindAll(ctx context.Context,
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicError(err)
 	var categories []domain.Category
+	defer rows.Close()
 	for rows.Next(){
 		category := domain.Category{}
 		err := rows.Scan(&category.Id, &category.Name)
